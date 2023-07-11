@@ -122,4 +122,27 @@ class QuestionController extends Controller
 
         return response()->json(['message' => 'Question deleted']);
     }
+
+    public function getCorrectAnswerCount()
+    {
+        $questions = Question::getCorrectAnswerCount();
+
+        return response()->json(['questions' => $questions]);
+    }
+
+    public function getByTitle(Request $request)
+    {
+        $searchString = $request->input('search');
+
+        $questions = Question::getByTitle($searchString);
+
+        return response()->json(['questions' => $questions]);
+    }
+
+    public function sortByCorrectAnswer()
+    {
+        $questions = Question::sortByCorrectAnswer();
+
+        return response()->json(['questions' => $questions]);
+    }
 }
