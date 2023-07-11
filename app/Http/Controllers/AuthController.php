@@ -6,40 +6,48 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
         // validation
-        $validatedData = $request->validate([
+        // $validatedData = $request->validate([
+        //     'name' => 'required|string',
+        //     'email' => 'required|email|unique:users,email',
+        //     'password' => 'required|min:6|max:20',
+        // ]);
+
+        $validatedData = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|max:20',
         ]);
 
+        if ($validatedData->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validatedData->errors(),
+            ], 422);
+        }
+
         // create user
         $user = User::create([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'password' => bcrypt($validatedData['password']),
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
         ]);
 
-        // create token
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        // response
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-        ], 200);
+        return response()->json(
+            ['message' => 'User registered successfully', 'user' => $user], 201);
     }
 
     public function login(Request $request)
     {
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
-                'message' => 'Invalid login details'
+                'message' => 'Invalid login credentials'
             ], 401);
         }
 

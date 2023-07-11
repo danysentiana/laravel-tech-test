@@ -13,3 +13,32 @@ Setup postman collection and environment
 ## Postman Setup
 
 set postman environment variable to local to run the api in the environment i've created
+
+## Project Installation
+
+1. Clone the repo
+
+    ```sh
+    git clone
+
+    ```
+
+2. Install composer packages
+    ```sh
+    composer install
+    ```
+3. Create a database in mysql
+4. Create a .env file and copy the contents of .env.example to it
+5. Set the database name, username and password in the .env file
+6. Run the migrations
+    ```sh
+    php artisan migrate
+    ```
+7. Run the seeder
+    ```sh
+    php artisan db:seed
+    ```
+8. Run the project
+    ```sh
+    php artisan serve
+    ```
